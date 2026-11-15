@@ -1,25 +1,58 @@
-# Free games from EpicGames
+# Free Epic Games Reminder
+
+Automatically checks Epic Games Store promotions and reminds you about free games.
+
 https://user-images.githubusercontent.com/99741291/234260233-74251cab-b305-4c05-81c5-348b39994423.mp4
 
 # ⚠️Status⚠️
 **Currently working with no problem.**
 
 # Description
-Reminds you if there are free giveaways released by epic.
-> **This exe will only work on Window 10 and Window 11.**
+This project contains multiple implementations of the Epic Games free-game reminder:
 
-# Requirements 
-- ~~Have a pc with internet access~~
-- No Special Requirements
+- **Rust**: the current implementation in `src/main.rs`.
+- **Python**: the original script in `Epic Games Reminder.py`.
+- **C**: the previous implementation in `Epic-Games.c`.
 
-# Instructions
-Just download the exe and place it into C:\Users\YOURUSERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+The prebuilt Windows executables are also included in the repository.
+
+> The prebuilt executables are intended for Windows 10 and Windows 11.
+
+# Rust version
+
+## Requirements
+
+- Rust and Cargo
+- An internet connection
+
+## Build and run
+
+```bash
+cargo run
+```
+
+To create a release executable:
+
+```bash
+cargo build --release
+```
+
+# Windows executable
+
+Download the executable and place it in:
+
+```text
+C:\Users\YOURUSERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+```
 
 # FAQ
-## Why i should use this exe?
+
+## Why should I use this reminder?
+
 This exe is designed for people like me who forget to claim the free games that epic releases.
 
-## Why should I even bother claiming these free games?
+## Why should I claim these free games?
+
 Simply because you can show that you have more games than your friends.
 
 # Meme ⬇️

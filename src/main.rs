@@ -1,10 +1,9 @@
+use chrono::{Local, Timelike};
 use std::thread::sleep;
 use std::time::Duration;
-use chrono::{Local, Timelike};
 
-fn main() 
-{
-    let local_now:i32 = Local::now().hour() as i32;
+fn main() {
+    let local_now: i32 = Local::now().hour() as i32;
     let local_program = Local::now().format("%H:%M");
     let usr: String = whoami::username();
     let url = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions?locale=it-IT&country=IT&allowCountries=IT";
@@ -13,21 +12,25 @@ fn main()
     println!("▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄ Developed by TheDevIsHere ▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀");
     sleep(Duration::from_secs(1));
 
-    if local_now >= 18
-    {
-        println!("Good evening: {}!\nProgram Start time: {} ", usr, local_program);
-    }
-    else 
-    {
-        println!("Good morning: {}!\nProgram Start time: {} ", usr, local_program);
+    if local_now >= 18 {
+        println!(
+            "Good evening: {}!\nProgram Start time: {} ",
+            usr, local_program
+        );
+    } else {
+        println!(
+            "Good morning: {}!\nProgram Start time: {} ",
+            usr, local_program
+        );
     }
 
     let games = &data["data"]["Catalog"]["searchStore"]["elements"];
 
     for game in games.as_array().unwrap() {
         let title: &str = game["title"].as_str().unwrap_or("idk");
-        let slug = game["catalogNs"]["mappings"].get(0).and_then(|m| m["pageSlug"].as_str());
-
+        let slug = game["catalogNs"]["mappings"]
+            .get(0)
+            .and_then(|m| m["pageSlug"].as_str());
 
         let discount = game["promotions"]
             ["promotionalOffers"][0]
@@ -36,7 +39,7 @@ fn main()
             .as_i64();
 
         if discount == Some(0) {
-             println!("Free games: {}", title);
+            println!("Free games: {}", title);
 
             if let Some(slug) = slug {
                 let url = format!("https://store.epicgames.com/en-US/p/{}", slug);
@@ -47,7 +50,4 @@ fn main()
             }
         }
     }
-
-
-
 }
