@@ -1,60 +1,65 @@
 # Free Epic Games Reminder
 
-Automatically checks Epic Games Store promotions and reminds you about free games.
+A Windows reminder that checks the Epic Games Store and opens currently free games in your browser.
 
-https://user-images.githubusercontent.com/99741291/234260233-74251cab-b305-4c05-81c5-348b39994423.mp4
+## Current version
 
-# ⚠️Status⚠️
-**Currently working with no problem.**
+The current implementation is written in **Rust** and is located in `src/main.rs`.
+Older Python and C implementations are kept in `legacy/` for reference.
 
-# Description
-This project contains multiple implementations of the Epic Games free-game reminder:
+## Download
 
-- **Rust**: the current implementation in `src/main.rs`.
-- **Python**: the original script in `Epic Games Reminder.py`.
-- **C**: the previous implementation in `Epic-Games.c`.
+Download the latest Windows executable from the [Releases](https://github.com/TheDeviler/FreeEpicGames/releases) page.
 
-The prebuilt Windows executables are also included in the repository.
-
-> The prebuilt executables are intended for Windows 10 and Windows 11.
-
-# Rust version
-
-## Requirements
-
-- Rust and Cargo
-- An internet connection
-
-## Build and run
-
-```bash
-cargo run
-```
-
-To create a release executable:
-
-```bash
-cargo build --release
-```
-
-# Windows executable
-
-Download the executable and place it in:
+To start the reminder automatically, place the downloaded executable in:
 
 ```text
 C:\Users\YOURUSERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 ```
 
-# FAQ
+The executable targets Windows 10 and Windows 11.
 
-## Why should I use this reminder?
+## Build the Rust version
 
-This exe is designed for people like me who forget to claim the free games that epic releases.
+### Requirements
 
-## Why should I claim these free games?
+- Rust and Cargo
+- An internet connection
 
-Simply because you can show that you have more games than your friends.
+### Run locally
 
-# Meme ⬇️
-![Ok is a meme](https://user-images.githubusercontent.com/99741291/234273051-a48cb522-d653-4d87-b752-3ce930119aaa.PNG)
+```bash
+cargo run
+```
 
+### Build a release executable
+
+```bash
+cargo build --release
+```
+
+The executable is created at `target/release/free-epic-games-reminder.exe`
+when built for Windows.
+
+## Repository layout
+
+```text
+src/main.rs              Current Rust implementation
+legacy/python/           Previous Python implementation
+legacy/c/                Previous C implementation
+legacy/windows/          Previous Windows executables
+```
+
+## FAQ
+
+### Why use this reminder?
+
+It helps you remember to claim the free games released by Epic Games.
+
+### Why claim free games?
+
+Because having more games than your friends is always useful.
+
+## License
+
+See [LICENSE](LICENSE).

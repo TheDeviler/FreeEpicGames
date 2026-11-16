@@ -1,14 +1,14 @@
 [package]
-name = "NewEpicGamesReminder"
-version = "0.1.0"
+name = "free-epic-games-reminder"
+version = "2.0.0"
 edition = "2024"
 
 [dependencies]
 chrono = "0.4"
-whoami = "1"
-webbrowser = "1"
+colored = "3"
+crossterm = "0.29"
 reqwest = { version = "0.12", features = ["blocking", "json"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-colored = "*"
-crossterm = "*"
+webbrowser = "1"
+whoami = "1"

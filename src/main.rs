@@ -1,76 +1,97 @@
+use std::error::Error;
 use std::thread::sleep;
 use std::time::Duration;
+
 use chrono::{Local, Timelike};
 use colored::Colorize;
-use crossterm::event::{read, Event};
+use crossterm::event::{Event, KeyCode, read};
+use serde_json::Value;
 
-fn main() 
-{
-    let local_now:i32 = Local::now().hour() as i32;
-    let local_program = Local::now().format("%H:%M");
-    let usr: String = whoami::username();
-    let url = "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions";
-    let response = reqwest::blocking::get(url).unwrap();
-    let data: serde_json::Value = response.json().unwrap();
-    println!("{}\n", "▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄ Developed by TheDevIsHere ▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀".green());
+const FREE_GAMES_URL: &str =
+    "https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions";
+const EPIC_GAME_URL: &str = "https://store.epicgames.com/en-US/p/";
+
+fn main() {
+    if let Err(error) = run() {
+        eprintln!("Error: {error}");
+        std::process::exit(1);
+    }
+}
+
+fn run() -> Result<(), Box<dyn Error>> {
+    let now = Local::now();
+    let username = whoami::username();
+
+    println!(
+        "{}\n",
+        "▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄ Developed by TheDevIsHere ▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀".green()
+    );
     sleep(Duration::from_secs(1));
 
-    if local_now >= 18
-    {
-        println!("Good evening: {}!\nProgram Start time: {} ", usr.blue(), (local_program).to_string().green());
-    }
-    else 
-    {
-        println!("Good morning: {}!\nProgram Start time: {} ", usr.blue(), (local_program).to_string().green());
-    }
+    let greeting = if now.hour() >= 18 {
+        "Good evening"
+    } else {
+        "Good morning"
+    };
+    println!(
+        "{greeting}: {}!\nProgram start time: {}\n",
+        username.blue(),
+        now.format("%H:%M").to_string().green()
+    );
     println!("Now looking for free games...");
     sleep(Duration::from_secs(1));
 
-    let games = &data["data"]["Catalog"]["searchStore"]["elements"];
+    let data: Value = reqwest::blocking::get(FREE_GAMES_URL)?
+        .error_for_status()?
+        .json()?;
+    let games = data["data"]["Catalog"]["searchStore"]["elements"]
+        .as_array()
+        .ok_or("Epic Games returned an unexpected response")?;
 
-    let mut i: i32 = 0;
-    for game in games.as_array().unwrap() 
-    {
-        
-        let title: &str = game["title"].as_str().unwrap_or("idk");
-        let slug = game["catalogNs"]["mappings"].get(0).and_then(|m| m["pageSlug"].as_str());
+    let mut free_games = 0;
+    for game in games {
+        if !is_free(game) {
+            continue;
+        }
 
+        let title = game["title"].as_str().unwrap_or("Unknown game");
+        println!("{} {}", "Free game:".green(), title.red());
+        free_games += 1;
 
-        let discount = game["promotions"]
-            ["promotionalOffers"][0]
-            ["promotionalOffers"][0]
-            ["discountSetting"]["discountPercentage"]
-            .as_i64();
-
-        if discount == Some(0) 
+        if let Some(slug) = game["catalogNs"]["mappings"]
+            .get(0)
+            .and_then(|mapping| mapping["pageSlug"].as_str())
         {
-            println!("{} {}", "Free games:".green(), title.red());
-            if let Some(slug) = slug 
-            {
-                let url = format!("https://store.epicgames.com/en-US/p/{}", slug);
-                
-                i+=1;
-                if let Err(e) = webbrowser::open(&url) {
-                    println!("Browser error: {}", e);
-                }
-            }
+            webbrowser::open(&format!("{EPIC_GAME_URL}{slug}"))?;
         }
     }
-    if i==0
-    {
+
+    if free_games == 0 {
         println!("No free games today!");
-        println!("Closing now.....");
         sleep(Duration::from_secs(3));
-        return; 
+        return Ok(());
     }
-    println!("\n{}\n", "▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀".green());
-    println!("{}", "Press backspace to close".bold());
+
+    println!(
+        "\n{}\n",
+        "▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄ Free games opened in your browser ▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀▄▀".green()
+    );
+    println!("{}", "Press Backspace to close.".bold());
+
     loop {
-        if let Ok(Event::Key(key_event)) = read() {
-            if key_event.code.is_backspace() 
-            {
-                break;                
+        if let Event::Key(key_event) = read()? {
+            if key_event.code == KeyCode::Backspace {
+                break;
             }
         }
     }
+
+    Ok(())
+}
+
+fn is_free(game: &Value) -> bool {
+    game["promotions"]["promotionalOffers"][0]["promotionalOffers"][0]["discountSetting"]
+        ["discountPercentage"]
+        .as_i64()
+        == Some(0)
 }
