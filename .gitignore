@@ -75,6 +75,9 @@ docs/_build/
 .pybuilder/
 target/
 *.pdb
+dist/*
+!dist/
+!dist/free-epic-games-reminder-v2.0.0-windows-x86_64.exe
 
 # Jupyter Notebook
 .ipynb_checkpoints

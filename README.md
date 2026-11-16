@@ -9,7 +9,8 @@ Older Python and C implementations are kept in `legacy/` for reference.
 
 ## Download
 
-Download the latest Windows executable from the [Releases](https://github.com/TheDeviler/FreeEpicGames/releases) page.
+Download the latest Windows executable from the [Releases](https://github.com/TheDeviler/FreeEpicGames/releases) page,
+or download the [v2.0.0 Rust executable](dist/free-epic-games-reminder-v2.0.0-windows-x86_64.exe) directly.
 
 To start the reminder automatically, place the downloaded executable in:
 
